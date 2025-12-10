@@ -1,0 +1,6 @@
+See Ch9 HW part 2 for:
+- tile coding
+- KNN
+- RBF
+- Fourier basis
+- Semi-gradient update
