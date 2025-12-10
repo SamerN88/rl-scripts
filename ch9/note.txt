@@ -3,4 +3,4 @@ See Ch9 HW part 2 for:
 - KNN
 - RBF
 - Fourier basis
-- Semi-gradient update
+- Semi-gradient TD(0) update
