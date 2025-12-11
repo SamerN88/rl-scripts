@@ -26,7 +26,9 @@ def TD_lambda_tabular_update(trajectory_states, rewards, V, *, gamma, lam, alpha
             z *= gamma * lam
             continue
 
-        x_t = np.zeros(d); x_t[idx[s_t]] = 1.0              # one-hot feature φ(S_t)
+        x_t = np.zeros(d)
+        x_t[idx[s_t]] = 1.0              # one-hot feature φ(S_t)
+
         v_next = terminal_value if s_tp1 not in V else V[s_tp1]
         delta  = r + gamma * v_next - V[s_t]                # TD error
 
