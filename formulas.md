@@ -15,7 +15,7 @@ A collection of Python scripts implementing reinforcement learning algorithms an
 
 | Formula | Description |
 |---------|-------------|
-| $q_\pi(s,a) = \mathbb{E}_\pi[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t=s, A_t=a]$ | Action-value function |
+| $$ q_\pi(s,a) = \mathbb{E}_\pi \left[ R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t = s, A_t = a \right] $$ | Action-value function |
 | $v_\pi(s) = \sum_a \pi(a\mid s) \sum_{s',r} p(s',r\mid s,a)[r + \gamma v_\pi(s')]$ | Bellman expectation equation |
 
 ### Chapter 5: Monte Carlo Methods
