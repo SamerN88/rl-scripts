@@ -2,6 +2,82 @@
 
 A collection of Python scripts implementing reinforcement learning algorithms and solving homework problems from Sutton & Barto's "Reinforcement Learning: An Introduction" (2nd Edition).
 
+## Formulas Reference
+
+### Chapter 3: Finite Markov Decision Processes
+
+| Formula | Description |
+|---------|-------------|
+| $G_t = R_{t+1} + \gamma G_{t+1}$ | Recursive return computation |
+| $G_t = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}$ | Discounted return |
+
+### Chapter 4: Dynamic Programming
+
+| Formula | Description |
+|---------|-------------|
+| $q_\pi(s,a) = \mathbb{E}_\pi[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t=s, A_t=a]$ | Action-value function |
+| $v_\pi(s) = \sum_a \pi(a\mid s) \sum_{s',r} p(s',r\mid s,a)[r + \gamma v_\pi(s')]$ | Bellman expectation equation |
+
+### Chapter 5: Monte Carlo Methods
+
+| Formula | Description |
+|---------|-------------|
+| $V(s) = G_0$ | First-visit MC estimator |
+| $V(s) = \frac{1}{T}\sum_{t=0}^{T-1} G_t$ | Every-visit MC estimator |
+
+### Chapter 6: Temporal-Difference Learning
+
+| Formula | Description |
+|---------|-------------|
+| $V(S_t) \leftarrow V(S_t) + \alpha[R_{t+1} + \gamma V(S_{t+1}) - V(S_t)]$ | TD(0) update rule |
+| $\delta_t = R_{t+1} + \gamma V(S_{t+1}) - V(S_t)$ | TD error |
+
+### Chapter 7: n-step Bootstrapping
+
+| Formula | Description |
+|---------|-------------|
+| $G_t^{(n)} = R_{t+1} + \gamma R_{t+2} + \cdots + \gamma^{n-1} R_{t+n} + \gamma^n V(S_{t+n})$ | n-step return |
+| $V(S_t) \leftarrow V(S_t) + \alpha[G_t^{(n)} - V(S_t)]$ | n-step TD update |
+
+### Chapter 9: On-policy Prediction with Approximation
+
+| Formula | Description |
+|---------|-------------|
+| $\hat{v}(s,w) = w^T x(s)$ | Linear function approximation |
+| $\delta_t = R_{t+1} + \gamma \hat{v}(S_{t+1}, w) - \hat{v}(S_t, w)$ | TD error with approximation |
+| $w \leftarrow w + \alpha \delta_t \nabla_w \hat{v}(S_t, w)$ | Semi-gradient TD(0) update |
+| $\Delta w = \alpha \sum_t \delta_t x(S_t)$ | Batch update accumulation |
+
+### Chapter 10: On-policy Control with Approximation
+
+| Formula | Description |
+|---------|-------------|
+| $\bar{r}(\pi) = \lim_{h\to\infty} \frac{1}{h} \sum_{t=1}^h \mathbb{E}[R_t \mid S_0, A_{0:t-1} \sim \pi]$ | Average-reward criterion (Eq. 10.6) |
+| $\bar{r} = \frac{1}{k}\sum_{i=1}^k r_i$ | Average reward for periodic sequences |
+
+### Chapter 12: Eligibility Traces
+
+| Formula | Description |
+|---------|-------------|
+| $G_t^\lambda = (1-\lambda) \sum_{n=1}^{T-t-1} \lambda^{n-1} G_t^{(n)} + \lambda^{T-t-1} G_t$ | Forward-view $\lambda$-return |
+| $G_{t:h}^\lambda = (1-\lambda) \sum_{n=1}^{h-t-1} \lambda^{n-1} G_{t:t+n} + \lambda^{h-t-1} G_{t:h}$ | Truncated $\lambda$-return |
+| $G_t^\lambda = \hat{v}(S_t, w) + \sum_{k=t}^{T-1} (\gamma\lambda)^{k-t} \delta_k$ | $\lambda$-return from TD errors |
+| $z_t = \gamma\lambda z_{t-1} + \nabla\hat{v}(S_t, w)$ | Accumulating eligibility trace |
+| $z_{-1} = 0$ | Initial eligibility trace |
+| $w \leftarrow w + \alpha \delta_t z_t$ | TD($\lambda$) backward-view update |
+
+### Chapter 13: Policy Gradient Methods
+
+| Formula | Description |
+|---------|-------------|
+| $G_t = \sum_{k=t}^{T-1} \gamma^{k-t} R_{k+1}$ | Monte Carlo return |
+| $\theta \leftarrow \theta + \alpha G_t \nabla_\theta \log \pi(A_t\mid S_t, \theta)$ | REINFORCE update |
+| $\nabla_\theta \log \pi(a\mid s, \theta) = (a - \mu) \Sigma^{-1} \frac{\partial \mu}{\partial \theta}$ | Policy gradient (Gaussian policy) |
+| $\mu = Ws$ | Linear mean function |
+| $\nabla_W \log \pi(a\mid s) = (a - Ws)s^T$ | Gradient for Gaussian policy with identity covariance |
+
+---
+
 ## Chapter 3: Finite Markov Decision Processes
 
 ### [`compute_returns_with_gamma.py`](ch3/compute_returns_with_gamma.py)
@@ -108,4 +184,3 @@ Implements REINFORCE policy gradient update for a Gaussian policy with linear me
 
 ```bash
 pip install -r requirements.txt
-```
