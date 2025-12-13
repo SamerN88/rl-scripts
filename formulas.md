@@ -15,7 +15,7 @@ A collection of Python scripts implementing reinforcement learning algorithms an
 
 | Formula | Description |
 |---------|-------------|
-| $$ q_\pi(s,a) = \mathbb{E}_\pi \left[ R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t = s, A_t = a \right] $$ | Action-value function |
+| $$ q_{\pi}(s,a) = \mathbb{E}_\pi \left[ R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t = s, A_t = a \right] $$ | Action-value function |
 | $v_\pi(s) = \sum_a \pi(a\mid s) \sum_{s',r} p(s',r\mid s,a)[r + \gamma v_\pi(s')]$ | Bellman expectation equation |
 
 ### Chapter 5: Monte Carlo Methods
@@ -62,9 +62,14 @@ A collection of Python scripts implementing reinforcement learning algorithms an
 | $G_t^\lambda = (1-\lambda) \sum_{n=1}^{T-t-1} \lambda^{n-1} G_t^{(n)} + \lambda^{T-t-1} G_t$ | Forward-view $\lambda$-return |
 | $G_{t:h}^\lambda = (1-\lambda) \sum_{n=1}^{h-t-1} \lambda^{n-1} G_{t:t+n} + \lambda^{h-t-1} G_{t:h}$ | Truncated $\lambda$-return |
 | $G_t^\lambda = \hat{v}(S_t, w) + \sum_{k=t}^{T-1} (\gamma\lambda)^{k-t} \delta_k$ | $\lambda$-return from TD errors |
-| $z_t = \gamma\lambda z_{t-1} + \nabla\hat{v}(S_t, w)$ | Accumulating eligibility trace |
+| $z_t(s) = \gamma\lambda z_{t-1}(s) + 1$ if $s = S_t$ | Accumulating eligibility trace (tabular) |
+| $z_t(s) = 1$ if $s = S_t$ | Replacing eligibility trace (tabular) |
+| $z_t(s) = \gamma\lambda z_{t-1}(s)$ otherwise | Eligibility trace decay |
+| $z_t = \gamma\lambda z_{t-1} + \nabla\hat{v}(S_t, w)$ | Accumulating eligibility trace (function approx.) |
 | $z_{-1} = 0$ | Initial eligibility trace |
-| $w \leftarrow w + \alpha \delta_t z_t$ | TD($\lambda$) backward-view update |
+| $\delta_t = R_{t+1} + \gamma V(S_{t+1}) - V(S_t)$ | TD error (tabular) |
+| $V(s) \leftarrow V(s) + \alpha \delta_t z_t(s)$ | TD($\lambda$) value update (tabular) |
+| $w \leftarrow w + \alpha \delta_t z_t$ | TD($\lambda$) backward-view update (function approx.) |
 
 ### Chapter 13: Policy Gradient Methods
 
@@ -148,6 +153,9 @@ where $\delta_k = R_{k+1} + \gamma \hat{v}(S_{k+1}, w) - \hat{v}(S_k, w)$.
 #### [`eligibility_trace.py`](ch12/tools/eligibility_trace.py)
 Computes eligibility traces using the accumulating trace: $z_t = \gamma\lambda z_{t-1} + \nabla\hat{v}(S_t, w)$. Includes utilities for one-hot feature vectors in tabular problems.
 
+#### [`eligibility_trace_update_accumulating_trace.py`](ch12/tools/eligibility_trace_update_accumulating_trace.py)
+Step-by-step implementation of tabular TD($\lambda$) with accumulating eligibility traces. Demonstrates the full backward-view algorithm with detailed printing of TD errors, eligibility traces, and value updates at each step.
+
 #### [`lam_return.py`](ch12/tools/lam_return.py)
 General implementation of forward-view $\lambda$-return computation from episode trajectories and value estimates.
 
@@ -184,3 +192,4 @@ Implements REINFORCE policy gradient update for a Gaussian policy with linear me
 
 ```bash
 pip install -r requirements.txt
+```

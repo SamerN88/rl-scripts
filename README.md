@@ -87,6 +87,9 @@ Computes truncated n-step TD($\lambda$) returns with detailed breakdowns of weig
 #### [`TD_lam_tabular_update.py`](ch12/tools/TD_lam_tabular_update.py)
 Implements backward-view TD($\lambda$) with eligibility traces for tabular state-value functions. Updates all states in a single episode pass using accumulating traces.
 
+#### [`eligibility_trace_update_accumulating_trace.py`](ch12/tools/eligibility_trace_update_accumulating_trace.py)
+Step-by-step implementation of tabular TD($\lambda$) with accumulating eligibility traces. Demonstrates the full backward-view algorithm with detailed printing of TD errors, eligibility traces, and value updates at each step.
+
 ---
 
 ## Chapter 13: Policy Gradient Methods
