@@ -1,7 +1,9 @@
 import numpy as np
 
 
-def compute_eligibility_trace(states, feature_fn, *, gamma, lam, until_index=None, z_init=None):
+import numpy as np
+
+def compute_eligibility_trace(states, feature_fn, *, gamma, lam, stop_after_state=None, z_init=None):
     """
     Compute the eligibility trace vector z_t by iterating:
         z_{-1} = 0
@@ -12,7 +14,7 @@ def compute_eligibility_trace(states, feature_fn, *, gamma, lam, until_index=Non
         feature_fn: callable s -> feature/gradient vector (numpy array, shape [d])
         gamma: discount factor (float)
         lam: trace decay (float)
-        until_index: if not None, stop after processing states[until_index] (inclusive)
+        stop_after_state: if not None, stop after processing the first occurrence of this state (inclusive)
         z_init: optional initial z_{-1}; if None uses zeros of correct dim
 
     Returns:
@@ -24,9 +26,15 @@ def compute_eligibility_trace(states, feature_fn, *, gamma, lam, until_index=Non
     d = len(feature_fn(states[0]))
     z = np.zeros(d, dtype=float) if z_init is None else np.array(z_init, dtype=float)
 
-    last = len(states) - 1 if until_index is None else int(until_index)
-    for t in range(0, last + 1):
-        z = gamma * lam * z + feature_fn(states[t])
+    for s in states:
+        z = gamma * lam * z + feature_fn(s)
+        if stop_after_state is not None and s == stop_after_state:
+            break
+    else:
+        # Only runs if we never hit 'break'
+        if stop_after_state is not None:
+            raise ValueError(f"stop_after_state {stop_after_state!r} not found in trajectory")
+
     return z
 
 
@@ -62,7 +70,7 @@ def main():
 
     # Compute z_t after processing state 3 (i.e., after states[0], states[1], states[2])
     z_after_s3 = compute_eligibility_trace(
-        states, feature_fn, gamma=gamma, lam=lam, until_index=index_map[3]  # until state 3
+        states, feature_fn, gamma=gamma, lam=lam, stop_after_state=3  # until state 3
     )
 
     print("Eligibility trace after processing state 3:")
