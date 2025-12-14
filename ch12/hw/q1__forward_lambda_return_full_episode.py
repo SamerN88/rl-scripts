@@ -171,7 +171,10 @@ def main():
 
     gamma = 0.9
     lam = 0.5
+
+    # --- CHANGE THIS TO GET THE LAMBDA RETURN FOR A DIFFERENT TIMESTEP/STATE ----------------- #
     t = 0  # we want G_0^lambda
+    # ----------------------------------------------------------------------------------------- #
 
     G_lambda_0 = lambda_return_forward(states, rewards, V, gamma, lam, t)
     print(f"G_0^lambda = {G_lambda_0:.6f}")  # expected ~1.372746
